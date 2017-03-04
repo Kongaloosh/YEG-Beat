@@ -1,12 +1,16 @@
+import sqlite3
 import requests
 import newspaper
-from slugify import slugify
-
-
+from ConfigParser import ConfigParser
 
 __author__ = 'kongaloosh'
 
+config = ConfigParser()
+config.read('config.ini')
 
+DATABASE = config.get('Global', 'Database')
+conn = sqlite3.connect(DATABASE)
+c = conn.cursor()
 
 ctv_url = 'http://edmonton.ctvnews.ca/'
 print("building CTV")
