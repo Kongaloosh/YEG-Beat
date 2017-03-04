@@ -27,8 +27,6 @@ app.config.from_object(__name__)
 app.config['STATIC_FOLDER'] = os.getcwd()
 cfg = None
 
-
-
 def init_db():
     with closing(connect_db()) as db:
         with app.open_resource('schema.sql', mode='r') as f:
@@ -55,7 +53,38 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_entries():
-    return render_template('index.html')
+    articles = []
+    cur = g.db.execute(
+        """
+            SELECT * FROM articles
+            ORDER BY articles.published DESC
+        """
+    )
+    for (id, slug, summary, author, url, image, published, location) in cur.fetchall():
+        try:
+            if len(author) > 25:
+                author = None
+        except TypeError:
+            pass
+        
+        articles.append({
+            'id':id,
+            'slug':slug,
+            'summary':summary,
+            'author':author,
+            'url':url,
+            'image':image,
+            'published':published,
+            'location':location
+        })
+
+    try:
+        articles = articles[:10]
+    except IndexError:
+        pass
+
+    print articles[0]
+    return render_template('index.html', articles=articles)
 
 
 if __name__ == "__main__":

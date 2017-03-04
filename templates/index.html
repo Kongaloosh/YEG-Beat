@@ -46,6 +46,9 @@
 			        <a class="p-location" style="overflow:scroll;"> {{article.location | safe }} </a>
 		        {% endif %}
             {% endif %}
+                {% if article.author %}
+                    by {{article.author}}
+                {% endif %}
             </p>
         </div> <!-- END POST DETAILS -->
 
