@@ -28,9 +28,6 @@ app.config['STATIC_FOLDER'] = os.getcwd()
 cfg = None
 
 
-def connect_db():
-    return sqlite3.connect('news.db')
-
 
 def init_db():
     with closing(connect_db()) as db:
@@ -39,10 +36,29 @@ def init_db():
         db.commit()
 
 
+def connect_db():
+    return sqlite3.connect(app.config['DATABASE'])
+
+
+
+@app.before_request
+def before_request():
+    g.db = connect_db()
+
+
+@app.teardown_request
+def teardown_request(exception):
+    db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()
+
+
 @app.route('/')
 def show_entries():
     return render_template('index.html')
 
 
 if __name__ == "__main__":
+    if not os.path.isfile("news.db"):
+        init_db()
     app.run()
