@@ -8,15 +8,15 @@
     </h2>
     {% endif %}
 
-    {% if article.image is defined %}
-    <a href="{{article.url}}">
-        <img
-                class="u-photo img-responsive center-block img-thumbnail img-rounded"
-                style="image-orientation: from-image; max-height:300px"
-                src="/{{article.photo}}"
-                >
-    </a>
-    {% endif %}
+    <!--{% if article.image %}-->
+    <!--<a href="{{article.url}}">-->
+        <!--<img-->
+                <!--class="u-photo img-responsive center-block img-thumbnail img-rounded"-->
+                <!--style="image-orientation: from-image; max-height:300px"-->
+                <!--src="{{article.image}}"-->
+
+    <!--</a>-->
+    <!--{% endif %}-->
 
     <div class="e-content">
         <div class="entry-footer clearfix">
@@ -54,7 +54,6 @@
 
         <div class="text-right col-lg-3 col-md-3 col-sm-3 col-xs-3">
             <p>
-                <i class="fa fa-reply"></i>
                 <a href="{{article.url}}"><i class="fa fa-link"></i></a>
             </p>
         </div> <!-- END PERMALINK -->

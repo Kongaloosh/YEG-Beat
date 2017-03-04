@@ -1,5 +1,5 @@
 drop table if exists articles;
-create table atricles (
+create table articles (
   id integer primary key autoincrement,
   slug text not null,
   summary text not null,
@@ -7,7 +7,7 @@ create table atricles (
   url text not null,
   image text,
   published date not null,
-  location text not null
+  location text
 );
 
 drop table if exists categories;

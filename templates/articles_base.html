@@ -26,13 +26,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    
+
     <!-- Bootstrap Core CSS -->
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='clean-blog.css') }}" rel="stylesheet">
     <!-- Custom Fonts -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+
     <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
@@ -73,16 +75,10 @@
     <div class="container">
         <div class="col-lg-8 col-lg-offset-2 col-md-12 col-sm-12 col-xs-12">
             <div class="row site-heading jumbotron" style="display: block;">
-
-                <div class="col-lg-4 col-md-4  col-sm-12 col-xs-12 profile-image-holder">
-
-                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12 intro-text">
-                    <p>
-                           <i class="fa fa-newspaper-o" aria-hidden="true" style="color:white"></i> YEG Beat
-                    </p>
-                    </div>
-
-                </div>
+                <h1> <i class="fa fa-newspaper-o" style="color:white"></i> </h1>
+                <p>
+                    An app to scrape, summarise, and organize <br> the news that matters to edmontonians.
+                </p>
             </div>
         </div>
     </div>
@@ -118,23 +114,6 @@
 
 <!-- Custom Theme JavaScript -->
 <script src="{{ url_for('static', filename='js/clean-blog.js') }}"></script>
-
-<!--http://webmention.io/js/mentions.js-->
-
-<!-- Add mousewheel plugin (this is optional) -->
-<script type="text/javascript" src="{{ url_for('static', filename='fancybox/lib/jquery.mousewheel-3.0.6.pack.js') }}"></script>
-
-<!-- Add fancyBox -->
-<link rel="stylesheet" href="{{ url_for('static', filename='fancybox/source/jquery.fancybox.css') }}" type="text/css" media="screen" />
-<script type="text/javascript" src="{{ url_for('static', filename='fancybox/source/jquery.fancybox.pack.js') }}"></script>
-
-<!-- Optionally add helpers - button, thumbnail and/or media -->
-<link rel="stylesheet" href="{{ url_for('static', filename='fancybox/source/helpers/jquery.fancybox-buttons.css') }}" type="text/css" media="screen" />
-<script type="text/javascript" src="{{ url_for('static', filename='fancybox/source/helpers/jquery.fancybox-buttons.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='fancybox/source/helpers/jquery.fancybox-media.js') }}"></script>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='fancybox/source/helpers/jquery.fancybox-thumbs.css') }}" type="text/css" media="screen" />
-<script type="text/javascript" src="{{ url_for('static', filename='fancybox/source/helpers/jquery.fancybox-thumbs.js') }}"></script>
 
 </body>
 </html>
