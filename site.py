@@ -2,7 +2,7 @@ from flask import Flask, request, session, g, redirect, url_for, abort, render_t
 import sqlite3
 from contextlib import closing
 import os
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 __author__ = 'kongaloosh'
 
@@ -38,7 +38,6 @@ def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
 
-
 @app.before_request
 def before_request():
     g.db = connect_db()
@@ -60,6 +59,7 @@ def show_entries():
             ORDER BY articles.published DESC
         """
     )
+
     for (id, slug, summary, author, url, image, published, location) in cur.fetchall():
         try:
             if len(author) > 25:
@@ -68,14 +68,14 @@ def show_entries():
             pass
         
         articles.append({
-            'id':id,
-            'slug':slug,
-            'summary':summary,
-            'author':author,
-            'url':url,
-            'image':image,
-            'published':published,
-            'location':location
+            'id': id,
+            'slug': slug,
+            'summary': summary,
+            'author': author,
+            'url': url,
+            'image': image,
+            'published': published,
+            'location': location
         })
 
     try:
@@ -83,7 +83,19 @@ def show_entries():
     except IndexError:
         pass
 
-    print articles[0]
+    cur = g.db.execute(
+        """
+            SELECT  categories.category, COUNT(categories.category) as num
+            FROM categories
+            INNER JOIN articles on articles.slug == categories.slug
+            WHERE date(articles.published) BETWEEN date('now','-2 day') AND date('now')
+            GROUP BY categories.category
+            ORDER BY num DESC
+            LIMIT 40
+        """
+    )
+    print(cur.fetchall())
+
     return render_template('index.html', articles=articles)
 
 
