@@ -59,7 +59,6 @@ def show_entries():
             ORDER BY articles.published DESC
         """
     )
-
     for (id, slug, summary, author, url, image, published, location) in cur.fetchall():
         try:
             if len(author) > 25:
@@ -85,16 +84,62 @@ def show_entries():
 
     cur = g.db.execute(
         """
-            SELECT  categories.category, COUNT(categories.category) as num
+            SELECT  categories.category
             FROM categories
             INNER JOIN articles on articles.slug == categories.slug
             WHERE date(articles.published) BETWEEN date('now','-2 day') AND date('now')
             GROUP BY categories.category
-            ORDER BY num DESC
+            ORDER BY COUNT(categories.category) DESC
             LIMIT 40
         """
     )
-    print(cur.fetchall())
+
+    categories = cur.fetchall()
+
+    articles = []
+    for category in categories:
+        cur = g.db.execute(
+            """ 
+            SELECT distinct(articles.id), 
+            articles.slug, 
+            articles.summary, 
+            articles.author, 
+            articles.url, 
+            articles.image, 
+            articles.published, 
+            articles.location
+            FROM articles
+            INNER JOIN categories on articles.slug == categories.slug
+            WHERE date(articles.published) BETWEEN date('now','-2 day') AND date('now')
+            AND categories.category='{0}'
+            """.format(category[0])
+        )
+        entries = []
+        #
+        # e = cur.fetchall()
+        # print(len(e[0]))
+
+        for (id, slug, summary, author, url, image, published, location) in cur.fetchall():
+            try:
+                if len(author) > 25:
+                    author = None
+            except TypeError:
+                pass
+
+            a = {
+                'id': id,
+                'slug': slug,
+                'summary': summary,
+                'author': author,
+                'url': url,
+                'image': image,
+                'published': published,
+                'location': location
+            }
+            if summary=='' or slug=='':
+                break
+            entries.append(a)
+        articles.append((category[0], entries))
 
     return render_template('index.html', articles=articles)
 
