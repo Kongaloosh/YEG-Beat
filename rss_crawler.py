@@ -1,12 +1,19 @@
+"""
+A crawler to pull news articles
+
+
+"""
+
 import sqlite3
 import requests
-import newspaper
-from ConfigParser import ConfigParser
+import newspaper as newspaper
+from configparser import ConfigParser
 from slugify import slugify
 import os
 from contextlib import closing
 import datetime
 from newspaper.article import ArticleException
+from nltk import word_tokenize, pos_tag, ne_chunk, sent_tokenize, ne_chunk_sents
 
 __author__ = 'kongaloosh'
 
@@ -16,25 +23,53 @@ config.read('config.ini')
 DATABASE = config.get('Global', 'Database')
 
 
-if not os.path.isfile("news.db"):
-    with closing(sqlite3.connect(DATABASE)) as db:
-        with open('schema.sql', 'r') as f:
-            db.cursor().executescript(f.read())
+if not os.path.isfile(DATABASE):                    # if the db does not exist
+    with closing(sqlite3.connect(DATABASE)) as db:  # open db
+        with open('schema.sql', 'r') as f:          # read the schema
+            db.cursor().executescript(f.read())     # execute the schema to make the db
         db.commit()
 
 conn = sqlite3.connect(DATABASE)
 c = conn.cursor()
 
-for source in ['http://edmonton.ctvnews.ca/', 'http://globalnews.ca/edmonton/', 'http://edmontonjournal.com/']:
+
+
+def extract_entity_names(t):
+    entity_names = []
+
+    if hasattr(t, 'label') and t.label:
+        if t.label() == 'NE':
+            entity_names.append(' '.join([child[0].title() for child in t]))
+        else:
+            for child in t:
+                entity_names.extend(extract_entity_names(child))
+
+    return entity_names
+
+
+def entity_extractor(sentence):
+    sentences = sent_tokenize(sentence)
+    tokenized_sentences = [word_tokenize(sentence) for sentence in sentences]
+    tagged_sentences = [pos_tag(sentence) for sentence in tokenized_sentences]
+    chunked_sentences = ne_chunk_sents(tagged_sentences, binary=True)
+
+    entity_names = []
+    for tree in chunked_sentences:
+        # Print results per sentence
+        # print extract_entity_names(tree)
+
+        entity_names.extend(extract_entity_names(tree))
+    return entity_names
+
+for source in ['https://foreignpolicy.com/', 'https://www.ft.com/', 'https://www.aljazeera.com/', 'https://www.cnn.com/']:
     print('building ' + source)
     paper = newspaper.build(source, memoize_articles=False)
     for article in paper.articles:
+        authors = None
         try:
             article.download()
             article.parse()
-            if len(article.authors) == 0:
-                authors = None
-            else:
+            if len(article.authors) > 0:
                 try:
                     authors = article.authors[0] + ", ".join(authors[1:])
                 except IndexError:
@@ -48,14 +83,19 @@ for source in ['http://edmonton.ctvnews.ca/', 'http://globalnews.ca/edmonton/', 
             published = article.publish_date
             if published is None:
                 published = datetime.datetime.now()
-            slug = slugify(title)
+            if title:
+                slug = slugify(title)
+            else:
+                slug = article.summary[:10]
             try:
-                image = article.images[0]
+                image = article.images.pop()
             except IndexError:
                 image = None
             article.nlp()
             summary = article.summary
-            keywords = article.keywords
+            if len(summary) < 50:
+                break
+            keywords = entity_extractor(article.text)
             url = article.url
             location = None
 
