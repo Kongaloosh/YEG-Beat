@@ -1,66 +1,69 @@
 {% extends "articles_base.html" %}
 {%block body%}
-{%for article in articles%}
-<div class="post-preview hentry h-entry">
+{%for element in articles%}
+<h1>{{element[0]}}</h1>
+    {%for article in element[1]%}
+    <div class="post-preview hentry h-entry">
     {% if article.title %}
-    <h2 class="post-title p-name">
-        <a href="{{article.url}}">{{article.title }}</a>
-    </h2>
-    {% endif %}
+        <h2 class="post-title p-name">
+            <a href="{{article.url}}">{{article.title }}</a>
+        </h2>
+        {% endif %}
 
-    <!--{% if article.image %}-->
-    <!--<a href="{{article.url}}">-->
-        <!--<img-->
-                <!--class="u-photo img-responsive center-block img-thumbnail img-rounded"-->
-                <!--style="image-orientation: from-image; max-height:300px"-->
-                <!--src="{{article.image}}"-->
+        <!--{% if article.image %}-->
+        <!--<a href="{{article.url}}">-->
+            <!--<img-->
+                    <!--class="u-photo img-responsive center-block img-thumbnail img-rounded"-->
+                    <!--style="image-orientation: from-image; max-height:300px"-->
+                    <!--src="{{article.image}}"-->
 
-    <!--</a>-->
-    <!--{% endif %}-->
+        <!--</a>-->
+        <!--{% endif %}-->
 
-    <div class="e-content">
-        <div class="entry-footer clearfix">
-          {% if article.summary %}
-                {{article.summary}}
-          {% endif%}
-            <div class="categories">                                <!-- Catagories -->
-                {% if article.category %}
-                    <i class="fa fa-tags"></i>
-                    {% for c in article.category %}
-                    <a class="category" href="/t/{{c}}">{{c}}</a>
-                    {% endfor %}
-                {% endif %}
+        <div class="e-content">
+            <div class="entry-footer clearfix">
+              {% if article.summary %}
+                    {{article.summary}}
+              {% endif%}
+                <div class="categories">                                <!-- Catagories -->
+                    {% if article.category %}
+                        <i class="fa fa-tags"></i>
+                        {% for c in article.category %}
+                        <a class="category" href="/t/{{c}}">{{c}}</a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="entry-footer row">
-        <div class="text-left col-lg-9 col-md-9 col-sm-9 col-xs-9">
-            <p>Posted on
-            <a href="{{article.url}}"><time class="dt-published">{{article.published}}</time></a>
-            {% if article.location and article.location_name%} <!-- If there's a location -->
-                in
-                {% if article.location_name %}
-			        <a class="p-location" style="overflow:scroll;"> {{article.location_name | safe }} </a>
-		        {% else %}
-			        <a class="p-location" style="overflow:scroll;"> {{article.location | safe }} </a>
-		        {% endif %}
-            {% endif %}
-                {% if article.author %}
-                    by {{article.author}}
+        <div class="entry-footer row">
+            <div class="text-left col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                <p>Posted on
+                <a href="{{article.url}}"><time class="dt-published">{{article.published}}</time></a>
+                {% if article.location and article.location_name%} <!-- If there's a location -->
+                    in
+                    {% if article.location_name %}
+                        <a class="p-location" style="overflow:scroll;"> {{article.location_name | safe }} </a>
+                    {% else %}
+                        <a class="p-location" style="overflow:scroll;"> {{article.location | safe }} </a>
+                    {% endif %}
                 {% endif %}
-            </p>
-        </div> <!-- END POST DETAILS -->
+                    {% if article.author %}
+                        by {{article.author}}
+                    {% endif %}
+                </p>
+            </div> <!-- END POST DETAILS -->
 
-        <div class="text-right col-lg-3 col-md-3 col-sm-3 col-xs-3">
-            <p>
-                <a href="{{article.url}}"><i class="fa fa-link"></i></a>
-            </p>
-        </div> <!-- END PERMALINK -->
-    </div> <!-- END AUTHORSHIP -->
-</div>
-<hr>
-{% else %}
-<p>No entries here so far </p> <!-- When we have nothing left -->
+            <div class="text-right col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <p>
+                    <a href="{{article.url}}"><i class="fa fa-link"></i></a>
+                </p>
+            </div> <!-- END PERMALINK -->
+        </div> <!-- END AUTHORSHIP -->
+    </div>
+    <hr>
+    {% else %}
+    <p>No entries here so far </p> <!-- When we have nothing left -->
+    {% endfor %}
 {% endfor %}
 {%endblock%}
